@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/skincare")
-@CrossOrigin(origins = "*")  // allow frontend requests (important for Netlify → Render)
 public class SkincareController {
 
     @Autowired
@@ -21,16 +20,15 @@ public class SkincareController {
     @Autowired
     private UserProductRecommendationRepository userProductRecommendationRepository;
 
-    // ✅ Fetch general recommendations
+    // ✅ General recommendations from `recommendation` table
     @GetMapping("/general")
     public List<Recommendation> getGeneralRecommendations(
             @RequestParam String skinType,
             @RequestParam List<String> concerns) {
-
         return recommendationRepository.findBySkinTypeAndConcernIn(skinType, concerns);
     }
 
-    // ✅ Fetch personalized recommendations from user_product_recommendation table
+    // ✅ Personalized recommendations from `user_product_recommendation` table
     @GetMapping("/recommendations")
     public List<UserProductRecommendation> getRecommendations(
             @RequestParam String skinType,

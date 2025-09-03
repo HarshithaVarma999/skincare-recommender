@@ -13,19 +13,18 @@ public class SkincareApplication {
         SpringApplication.run(SkincareApplication.class, args);
     }
 
-    // Configure CORS to allow the React frontend to access the backend
-   @Bean
+    // ✅ Configure CORS globally
+    @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
-        @Override
-        public void addCorsMappings(@NonNull CorsRegistry registry) {
-            registry.addMapping("/api/**")
-                    .allowedOrigins("https://68b7fd61f483ea74c85f38e7--bespoke-unicorn-2cde46.netlify.app")
-                    .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-                    .allowedHeaders("*")
-                    .allowCredentials(true);
-        }
-    };
-}
-
+            @Override
+            public void addCorsMappings(@NonNull CorsRegistry registry) {
+                registry.addMapping("/api/**")
+                        .allowedOrigins("https://68b7fd61f483ea74c85f38e7--bespoke-unicorn-2cde46.netlify.app") // Netlify frontend URL
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
+            }
+        };
+    }
 }
