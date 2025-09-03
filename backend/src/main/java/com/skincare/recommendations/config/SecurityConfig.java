@@ -33,7 +33,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOriginPatterns(Arrays.asList(
-                "https://68b7fd61f483ea74c85f38e7--bespoke-unicorn-2cde46.netlify.app"
+                "https://68b876cc37eb6e2ae7ae6f30--bespoke-unicorn-2cde46.netlify.app"
         ));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
