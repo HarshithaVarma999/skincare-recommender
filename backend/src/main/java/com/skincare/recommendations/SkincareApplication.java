@@ -20,7 +20,7 @@ public class SkincareApplication {
         @Override
         public void addCorsMappings(@NonNull CorsRegistry registry) {
             registry.addMapping("/api/**")
-                    .allowedOrigins("https://your-frontend-service.netlify.app")
+                    .allowedOrigins("https://68b7fd61f483ea74c85f38e7--bespoke-unicorn-2cde46.netlify.app")
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                     .allowedHeaders("*")
                     .allowCredentials(true);
