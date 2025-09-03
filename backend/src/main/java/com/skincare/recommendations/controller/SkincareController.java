@@ -2,6 +2,7 @@ package com.skincare.recommendations.controller;
 
 import com.skincare.recommendations.repository.RecommendationRepository;
 import com.skincare.recommendations.repository.UserProductRecommendationRepository;
+import com.skincare.recommendations.model.Recommendation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,9 +29,10 @@ public class SkincareController {
             @RequestParam String skinType,
             @RequestParam List<String> concerns) {
 
-        // 1) TOP (default) recommendations from the join table, filtered by concerns
-        List<String> csvs = recommendationRepository.findCsvRecsFor(skinType, concerns);
-        List<String> topRecs = csvs.stream()
+        // 1) TOP (default) recommendations from the new recommendation table
+        List<Recommendation> recs = recommendationRepository.findBySkinTypeAndConcernIn(skinType, concerns);
+        List<String> topRecs = recs.stream()
+                .map(Recommendation::getRecommendations)
                 .filter(Objects::nonNull)
                 .flatMap(csv -> Arrays.stream(csv.split(",")))
                 .map(String::trim)
@@ -38,7 +40,7 @@ public class SkincareController {
                 .distinct()
                 .collect(Collectors.toList());
 
-        // 2) Community recommendations from user submissions (filtered by concerns)
+        // 2) Community recommendations from user submissions (using a new PostgreSQL-compatible query)
         List<String> communityRecs = concerns.stream()
                 .flatMap(concern ->
                         userRepo.findBySkinTypeAndConcern(skinType, concern).stream()
@@ -47,7 +49,7 @@ public class SkincareController {
                 .collect(Collectors.toList());
 
         Map<String, List<String>> response = new HashMap<>();
-        response.put("topRecommendations", topRecs);                // <-- matches your frontend
+        response.put("topRecommendations", topRecs);
         response.put("communityRecommendations", communityRecs);
         return response;
     }
