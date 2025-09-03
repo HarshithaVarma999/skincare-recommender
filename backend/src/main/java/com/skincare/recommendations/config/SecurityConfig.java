@@ -22,8 +22,8 @@ public class SecurityConfig {
         http.cors(Customizer.withDefaults()); // ✅ enable CORS with our bean
 
         http.authorizeHttpRequests(authz -> authz
-    .anyRequest().permitAll()
-);
+                .anyRequest().permitAll()
+        );
 
         return http.build();
     }
@@ -32,13 +32,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("https://68b7fd61f483ea74c85f38e7--bespoke-unicorn-2cde46.netlify.app"));
+        config.setAllowedOriginPatterns(Arrays.asList(
+                "https://68b7fd61f483ea74c85f38e7--bespoke-unicorn-2cde46.netlify.app"
+        ));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/**", config);
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 }
