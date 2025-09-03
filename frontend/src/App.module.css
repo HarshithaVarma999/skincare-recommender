@@ -1,0 +1,273 @@
+/* 🌿 App.module.css */
+
+/* === App container === */
+.appContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #a2d2ff, #bde0fe, #cdb4db);
+  padding: 2rem;
+}
+
+/* === Shared Card === */
+.card {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
+
+  width: 100%;
+  max-width: 650px;
+  min-width: 400px;
+
+  text-align: center;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* === Step 2 Quiz Layout === */
+.quizScreen {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
+
+  width: 100%;
+  max-width: 800px; /* ✅ wider than card */
+  min-width: 500px;
+
+  text-align: center;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* === Typography === */
+.title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #222;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.questionSection {
+  margin: 1.5rem 0;
+  text-align: left;
+}
+
+.questionHeading {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.questionSubtitle {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 1rem;
+}
+
+/* === Options Grid === */
+.optionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.optionLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9f9f9;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Hover (only apply when NOT selected) */
+.optionLabel:hover:not(.optionLabelSelected) {
+  border-color: #0077ff;
+  background: #eef6ff;
+}
+
+/* ✅ Selected state applies immediately */
+.optionLabelSelected {
+  border-color: #0077ff;
+  background: linear-gradient(135deg, #0077ff, #00aaff);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0px 4px 10px rgba(0, 119, 255, 0.3);
+}
+
+/* Hide native inputs */
+.radioInput,
+.checkboxInput {
+  display: none;
+}
+/* === Buttons === */
+.buttonPrimaryBlue {
+  background: linear-gradient(135deg, #0077ff, #00aaff);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 0.8rem 1.5rem;
+  margin-top: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.buttonPrimaryBlue:hover {
+  background: linear-gradient(135deg, #005fcc, #0088dd);
+}
+
+.buttonPrimaryBlue:disabled {
+  opacity: 0.6;  /* faded look but still blue */
+  cursor: not-allowed;
+}
+
+/* If you still want a grey generic disabled style, keep this */
+.buttonDisabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.buttonPrimary {
+  background: #444;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 0.8rem 1.5rem;
+  margin-top: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.buttonPrimary:hover {
+  background: #222;
+}
+
+/* === Recommendation Sections === */
+.recommendationsBox {
+  text-align: left;
+}
+
+.recommendationsTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.recommendationList {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.recommendationItem {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.noRecsMessage {
+  font-size: 0.95rem;
+  color: #777;
+}
+
+/* === User Recommendation Form === */
+.userRecSection {
+  margin-top: 2rem;
+}
+
+.userRecTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+
+.userRecForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.formInput {
+  padding: 0.7rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border 0.2s;
+}
+
+.formInput:focus {
+  border-color: #0077ff;
+  outline: none;
+}
+
+/* === Messages === */
+.successMessage {
+  color: green;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* === Loading Spinner === */
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 5px solid #ddd;
+  border-top: 5px solid #0077ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* === Animations === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Container for action buttons */
+.actionButtons {
+  display: flex;
+  justify-content: center; /* center them horizontally */
+  gap: 1rem;              /* ✅ spacing between buttons */
+  margin-top: 1rem;
+}
