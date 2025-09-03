@@ -1,56 +1,46 @@
 package com.skincare.recommendations.controller;
 
+import com.skincare.recommendations.model.Recommendation;
+import com.skincare.recommendations.model.UserProductRecommendation;
 import com.skincare.recommendations.repository.RecommendationRepository;
 import com.skincare.recommendations.repository.UserProductRecommendationRepository;
-import com.skincare.recommendations.model.Recommendation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Arrays;
 
 @RestController
 @RequestMapping("/api/skincare")
+@CrossOrigin(origins = "*")  // allow frontend requests (important for Netlify → Render)
 public class SkincareController {
 
-    private final RecommendationRepository recommendationRepository;
-    private final UserProductRecommendationRepository userRepo;
+    @Autowired
+    private RecommendationRepository recommendationRepository;
 
     @Autowired
-    public SkincareController(RecommendationRepository recommendationRepository,
-                              UserProductRecommendationRepository userRepo) {
-        this.recommendationRepository = recommendationRepository;
-        this.userRepo = userRepo;
-    }
+    private UserProductRecommendationRepository userProductRecommendationRepository;
 
-    @GetMapping("/recommendations")
-    public Map<String, List<String>> getRecommendations(
+    // ✅ Fetch general recommendations
+    @GetMapping("/general")
+    public List<Recommendation> getGeneralRecommendations(
             @RequestParam String skinType,
             @RequestParam List<String> concerns) {
 
-        // 1) TOP (default) recommendations from the new recommendation table
-        List<Recommendation> recs = recommendationRepository.findBySkinTypeAndConcernIn(skinType, concerns);
-        List<String> topRecs = recs.stream()
-                .map(Recommendation::getRecommendations)
-                .filter(Objects::nonNull)
-                .flatMap(csv -> Arrays.stream(csv.split(",")))
-                .map(String::trim)
-                .filter(s -> !s.isBlank())
-                .distinct()
-                .collect(Collectors.toList());
+        return recommendationRepository.findBySkinTypeAndConcernIn(skinType, concerns);
+    }
 
-        // 2) Community recommendations from user submissions (using a new PostgreSQL-compatible query)
-        List<String> communityRecs = concerns.stream()
+    // ✅ Fetch personalized recommendations from user_product_recommendation table
+    @GetMapping("/recommendations")
+    public List<UserProductRecommendation> getRecommendations(
+            @RequestParam String skinType,
+            @RequestParam List<String> concerns) {
+
+        return concerns.stream()
                 .flatMap(concern ->
-                        userRepo.findBySkinTypeAndConcern(skinType, concern).stream()
-                                .map(u -> u.getBrandName() + " " + u.getProductName()))
-                .distinct()
+                        userProductRecommendationRepository
+                                .findBySkinTypeAndConcerns(skinType, concern).stream()
+                )
                 .collect(Collectors.toList());
-
-        Map<String, List<String>> response = new HashMap<>();
-        response.put("topRecommendations", topRecs);
-        response.put("communityRecommendations", communityRecs);
-        return response;
     }
 }

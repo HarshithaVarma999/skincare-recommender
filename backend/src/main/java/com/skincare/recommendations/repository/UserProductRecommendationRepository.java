@@ -11,14 +11,14 @@ import java.util.List;
 @Repository
 public interface UserProductRecommendationRepository extends JpaRepository<UserProductRecommendation, Long> {
 
-    // Match concerns stored as CSV using LIKE
-     @Query(value = """
+    @Query(value = """
         SELECT *
         FROM user_product_recommendation
         WHERE skin_type = :skinType
-          AND FIND_IN_SET(:concern, concerns) > 0
+          AND concerns = :concern
         """, nativeQuery = true)
-    List<UserProductRecommendation> findBySkinTypeAndConcern(
+    List<UserProductRecommendation> findBySkinTypeAndConcerns(
             @Param("skinType") String skinType,
             @Param("concern") String concern
-    );}
+    );
+}
