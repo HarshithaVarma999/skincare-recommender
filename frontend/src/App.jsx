@@ -43,30 +43,41 @@ export default function App() {
   };
 
   const handleSubmit = async () => {
-    if (!skinType || concerns.length === 0) return;
+  if (!skinType || concerns.length === 0) return;
 
-    setLoading(true);
-    setError(null);
+  setLoading(true);
+  setError(null);
 
-    const queryParams = new URLSearchParams();
-    queryParams.append("skinType", skinType);
-    concerns.forEach((c) => queryParams.append("concerns", c));
+  const queryParams = new URLSearchParams();
+  queryParams.append("skinType", skinType);
+  concerns.forEach((c) => queryParams.append("concerns", c));
 
-    try {
-      const response = await api.get(
-        `/api/skincare/recommendations?${queryParams.toString()}`
-      );
+  try {
+    const response = await api.get(
+      `/api/skincare/recommendations?${queryParams.toString()}`
+    );
 
-      setTopRecommendations(response.data.topRecommendations || []);
-      setCommunityRecommendations(response.data.communityRecommendations || []);
-      setStep(3);
-    } catch (e) {
-      console.error("Error fetching recommendations:", e);
-      setError("⚠️ Failed to get recommendations. Please check the backend server.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const recs = response.data;
+
+    // ✅ Separate curated vs community
+    setTopRecommendations(
+      recs.filter((r) => r.source === "top").map((r) => r.recommendations)
+    );
+
+    setCommunityRecommendations(
+  recs.filter((r) => r.source === "community")
+);
+
+
+    setStep(3);
+  } catch (e) {
+    console.error("Error fetching recommendations:", e);
+    setError("⚠️ Failed to get recommendations. Please check the backend server.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleUserRecFormChange = (e) => {
     const { name, value } = e.target;
@@ -74,30 +85,31 @@ export default function App() {
   };
 
   const handleUserRecSubmit = async (e) => {
-    e.preventDefault();
-    setSubmissionStatus(null);
-    try {
-      const payload = {
-        skinType: skinType,
-        concerns: concerns.join(","), // CSV in DB
-        productType: userRecForm.productType,
-        brandName: userRecForm.brandName,
-        productName: userRecForm.productName,
-      };
+  e.preventDefault();
+  setSubmissionStatus(null);
+  try {
+    const payload = {
+      skinType: skinType,
+      concerns: concerns.join(","), // still stored as CSV in DB
+      productType: userRecForm.productType,
+      brandName: userRecForm.brandName,
+      productName: userRecForm.productName,
+    };
 
-      const response = await api.post(
-        "/api/user-recommendations/submit",
-        payload
-      );
-      if (response.status === 200) {
-        setSubmissionStatus("success");
-        setUserRecForm({ productType: "", brandName: "", productName: "" });
-      }
-    } catch (e) {
-      console.error("Error submitting recommendation:", e);
-      setSubmissionStatus("error");
+    const response = await api.post(
+      "/api/skincare/user-recommendations", // ✅ updated endpoint
+      payload
+    );
+    if (response.status === 200) {
+      setSubmissionStatus("success");
+      setUserRecForm({ productType: "", brandName: "", productName: "" });
     }
-  };
+  } catch (e) {
+    console.error("Error submitting recommendation:", e);
+    setSubmissionStatus("error");
+  }
+};
+
 
   // 👉 Render content
   const renderContent = () => {
@@ -233,10 +245,12 @@ export default function App() {
                 <ul className={styles.recommendationList}>
                   {communityRecommendations.map((rec, index) => (
                     <li key={index} className={styles.recommendationItem}>
-                      ✔️ {rec}
+                      ✔️ <strong>{rec.brandName}</strong> {rec.productName} 
+                      <em> ({rec.productType})</em>
                     </li>
                   ))}
                 </ul>
+
               ) : (
                 <p className={styles.noRecsMessage}>
                   No community recommendations yet. Be the first to share one!
