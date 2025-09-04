@@ -25,38 +25,46 @@ public class SkincareController {
      * Handles multiple concerns
      */
     @GetMapping("/recommendations")
-    public List<RecommendationResponse> getRecommendations(
-            @RequestParam String skinType,
-            @RequestParam List<String> concerns) {
+public List<RecommendationResponse> getRecommendations(
+        @RequestParam String skinType,
+        @RequestParam List<String> concerns) {
 
-        List<RecommendationResponse> responses = new ArrayList<>();
+    List<RecommendationResponse> responses = new ArrayList<>();
 
-        // 🔹 Curated recs
-        skincareService.getTopRecommendations(skinType, concerns)
-                .forEach(r -> responses.add(
-                        new RecommendationResponse(
-                                "top",
-                                r.getSkinType(),
-                                r.getConcern(),
-                                r.getRecommendations()
-                        )
-                ));
+    // 🔹 Curated recs (split into multiple lines)
+    skincareService.getTopRecommendations(skinType, concerns)
+            .forEach(r -> {
+                if (r.getRecommendations() != null) {
+                    String[] recParts = r.getRecommendations().split("[;\n]");
+                    for (String part : recParts) {
+                        String trimmed = part.trim();
+                        if (!trimmed.isEmpty()) {
+                            responses.add(new RecommendationResponse(
+                                    "top",
+                                    r.getSkinType(),
+                                    r.getConcern(),
+                                    trimmed
+                            ));
+                        }
+                    }
+                }
+            });
 
-        // 🔹 Community recs
-        skincareService.getCommunityRecommendations(skinType, concerns)
-                .forEach(c -> responses.add(
-                        new RecommendationResponse(
-                                "community",
-                                c.getSkinType(),
-                                c.getConcerns(),
-                                c.getProductType(),
-                                c.getBrandName(),
-                                c.getProductName()
-                        )
-                ));
+    // 🔹 Community recs
+    skincareService.getCommunityRecommendations(skinType, concerns)
+            .forEach(c -> responses.add(
+                    new RecommendationResponse(
+                            "community",
+                            c.getSkinType(),
+                            c.getConcerns(),
+                            c.getProductType(),
+                            c.getBrandName(),
+                            c.getProductName()
+                    )
+            ));
 
-        return responses;
-    }
+    return responses;
+}
 
     /**
      * ✅ Submit a new community recommendation
