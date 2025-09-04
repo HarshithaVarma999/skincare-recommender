@@ -8,14 +8,15 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
 @Repository
 public interface UserProductRecommendationRepository extends JpaRepository<UserProductRecommendation, Long> {
 
     @Query(value = """
         SELECT *
         FROM user_product_recommendation
-        WHERE skin_type = :skinType
-          AND concerns = :concern
+        WHERE LOWER(skin_type) = LOWER(:skinType)
+          AND LOWER(concerns) = LOWER(:concern)
         """, nativeQuery = true)
     List<UserProductRecommendation> findBySkinTypeAndConcerns(
             @Param("skinType") String skinType,
